@@ -1,10 +1,17 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
+distFolder = path.resolve(__dirname, 'dist')
+
 module.exports = {
+    mode: 'development',
+    devtool: 'inline-source-map',
     entry: './src/index.js',
+    devServer: {
+        contentBase: distFolder
+    },
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: distFolder,
         filename: 'js/bundle.js'
     },
     module: {

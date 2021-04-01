@@ -2,10 +2,13 @@
   "name": "website",
   "version": "1.0.0",
   "description": "Code to generate the simra-project.github.io dashboard",
+  "private": true,
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production"
+    "build": "webpack",
+    "dev": "webpack-dev-server --open",
+    "prod": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -26,6 +29,7 @@
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "webpack": "^4.16.0",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.11.2"
   }
 }
