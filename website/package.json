@@ -1,0 +1,31 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "Code to generate the simra-project.github.io dashboard",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simra-project/dashboard.git"
+  },
+  "author": "MCC",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simra-project/dashboard/issues"
+  },
+  "homepage": "https://github.com/simra-project/dashboard#readme",
+  "devDependencies": {
+    "bulma": "^0.7.2",
+    "css-loader": "^1.0.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "mini-css-extract-plugin": "^1.4.0",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.16.0",
+    "webpack-cli": "^3.0.8"
+  }
+}

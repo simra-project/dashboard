@@ -7,3 +7,4 @@ out/
 data/*
 .ipynb_checkpoints/
 *.pem
+node_modules/
