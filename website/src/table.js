@@ -66,7 +66,7 @@ function generateTable(table, regions, tableMeta) {
         const row = table.insertRow();
         // name column
         const th = document.createElement("th")
-        th["data-label"] = region.name
+        th.setAttribute("data-label", region.name)
         const textName = document.createTextNode(region.name);
         th.appendChild(textName)
         row.appendChild(th)
@@ -91,9 +91,10 @@ function generateTable(table, regions, tableMeta) {
 
 // key = rides, value = [100, 1]
 function generateStatColumn(row, key, value, tableMeta) {
-    // create cell
-    const cell = row.insertCell();
-    cell["data-label"] = tableMeta[key]
+    // create cell and append already to row
+    const cell = document.createElement("td")
+    cell.setAttribute("data-label", tableMeta[key].text);
+    row.appendChild(cell)
 
     // create div
     const div = document.createElement("div")
@@ -105,9 +106,32 @@ function generateStatColumn(row, key, value, tableMeta) {
     // create total span text
     const totalSpanText = document.createTextNode(value[0].toLocaleString())
 
-    // append elements in reverse creation order
+    // create diff span
+    const divSpan = document.createElement("span")
+    const icon = document.createElement("i")
+    if (value[1] > 0) {
+        divSpan.className = "tag " + tableMeta[key].tag
+        icon.className = "fas fa-arrow-circle-up"
+    } else {
+        divSpan.className = "tag"
+        icon.className = "fas fa-arrow-circle-right"
+    }
+    const iconText = document.createElement("span")
+    iconText.className = "icon-text is-flex-wrap-nowrap"
+    const iconSpan = document.createElement("span")
+    iconSpan.className = "icon mr-0"
+    const diffValue = document.createElement("span")
+    diffValue.appendChild(document.createTextNode(value[1].toLocaleString()))
+
+    // append elements in reverse creation order to cell
+    iconSpan.appendChild(icon)
+    iconText.appendChild(iconSpan)
+    iconText.appendChild(diffValue)
+    divSpan.appendChild(iconText)
+
     totalSpan.appendChild(totalSpanText)
     div.appendChild(totalSpan)
+    div.appendChild(divSpan)
     cell.appendChild(div)
 }
 
