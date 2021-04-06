@@ -5,6 +5,9 @@
 
 // My changes
 $container-max-width: 1600px;
+.tag {
+  min-width: 100px;
+}
 
 /* Bulma Responsive Tables */
 @import "~bulma-responsive-tables/bulma-responsive-tables";

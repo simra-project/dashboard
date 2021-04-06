@@ -40,10 +40,6 @@ let tableMeta = {
         text: "Gefahrene Kilometer",
         abbr: "Gefahrene Kilometer",
         tag: "is-success"
-    },
-    map: {
-        text: "Auswertungskarte",
-        abbr: "Auswertungskarte"
     }
 }
 
@@ -67,8 +63,11 @@ function generateTable(table, regions, tableMeta) {
         // name column
         const th = document.createElement("th")
         th.setAttribute("data-label", region.name)
+        const a = document.createElement("a")
+        a.href = region.map
         const textName = document.createTextNode(region.name);
-        th.appendChild(textName)
+        a.appendChild(textName)
+        th.appendChild(a)
         row.appendChild(th)
 
         // stat columns
@@ -77,15 +76,6 @@ function generateTable(table, regions, tableMeta) {
                 generateStatColumn(row, key, value, tableMeta);
             }
         }
-
-        // map column
-        const cell = document.createElement("td")
-        const a = document.createElement("a")
-        a.href = region.map
-        const textMap = document.createTextNode("Auswertungskarte");
-        a.appendChild(textMap)
-        cell.appendChild(a)
-        row.appendChild(cell)
     }
 }
 
@@ -102,7 +92,7 @@ function generateStatColumn(row, key, value, tableMeta) {
 
     // create total span
     const totalSpan = document.createElement("span")
-    totalSpan.className = "tag is-medium mr-1"
+    totalSpan.className = "tag is-medium mr-1 is-flex-grow-1"
     // create total span text
     const totalSpanText = document.createTextNode(value[0].toLocaleString())
 
