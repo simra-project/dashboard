@@ -1,26 +1,56 @@
-import util.toIntPair
 import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.*
+import me.tongfei.progressbar.ProgressBar
 
-fun main(args: Array<String>) {
+
+val dataDir = "../data"
+val outputDir = "./out"
+
+fun main(args: Array<String>) = runBlocking {
     println("Hello World!")
 
-    val profile = processProfile(File("../data/Freiburg/Profiles/VM2_165440750"))
-    println(profile)
+    // check if there is an index.txt and a dashboard.json for the current date -> abort if yes
+    require(!getTodaysIndexFile().exists()) { "There already is an index file for today, aborting" }
+    require(!getTodaysDashboardFile().exists()) { "There already is a dashboard file for today, aborting" }
+
+    // create index for current date
+    val ri = RideIndex()
+    ri.createIndexFromSourceFiles(File(dataDir))
+
+    // calculate file diffs for index and last index
+    // TODO
+
+    // create ride objects for new files
+    val coroutines = mutableListOf<Deferred<Ride?>>()
+    val pb = ProgressBar("Rides", ri.index.size.toLong())
+
+    for (path in ri.index) {
+        coroutines.add(async(Dispatchers.Default) {
+            val ride = RideProcessor(File(path)).getRide()
+            pb.step()
+            ride
+        })
+    }
+    val rides = coroutines.awaitAll().filterNotNull()
+    println(rides)
+
+    // read in last dashboard.json and determine new totals
+
+    // read in dashboard.json from 7-days ago and determine change
+
+    // write dashboard.json and index.txt
+    // TODO
+    // ri.saveIndex(getTodaysIndexFile())
 }
 
-fun processProfile(file: File): Profile {
-    require(file.exists()) { "File ${file.absolutePath} does not exist" }
+fun getTodaysIndexFile(): File {
+    val currentDateTime = LocalDateTime.now()
+    return File("$outputDir/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-index.txt")
+}
 
-    val lines = file.bufferedReader().readLines()
-    check(lines.size == 3) { "Profile ${file.absolutePath} has more than 3 lines, has ${lines.size}" }
-
-    val version = lines[0].split("#").toIntPair()
-    val distanceIndex = lines[1].split(",").indexOf("distance")
-    val distance = if (distanceIndex > -1) lines[2].split(",")[distanceIndex].toInt() else null
-
-    if (version.first >= 24) {
-        check(distance != null) { "For $version there should be a distance field, but there is none."}
-    }
-
-    return Profile(version, distance)
+fun getTodaysDashboardFile(): File {
+    val currentDateTime = LocalDateTime.now()
+    return File("$outputDir/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
 }
