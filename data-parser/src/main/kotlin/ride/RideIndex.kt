@@ -1,4 +1,9 @@
+package ride
+
+import org.apache.logging.log4j.LogManager
 import java.io.File
+
+private val logger = LogManager.getLogger()
 
 class RideIndex() {
 
@@ -11,7 +16,7 @@ class RideIndex() {
 
     fun saveIndex(indexFile: File) {
         indexFile.writeText(index.joinToString("\n"))
-        println("Saved index to ${indexFile.absolutePath}")
+        logger.info("Saved index to ${indexFile.absolutePath}")
     }
 
     fun createIndexFromSourceFiles(rootDir: File) {

@@ -1,30 +1,40 @@
+import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.mainBody
+import dashboard.createDashboard
+import de.hasenburg.broker.simulation.main.Conf
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.*
 import me.tongfei.progressbar.ProgressBar
+import org.apache.logging.log4j.LogManager
+import ride.RideIndex
+import ride.RideProcessor
+import kotlin.system.exitProcess
 
-
-val dataDir = "../data"
-val outputDir = "./out"
+private val logger = LogManager.getLogger()
 
 fun main(args: Array<String>) = runBlocking {
-    println("Hello World!")
+    val conf = mainBody { ArgParser(args).parseInto(::Conf) }
+    logger.info(conf.toString())
 
-    // check if there is an index.txt and a dashboard.json for the current date -> abort if yes
-    require(!getTodaysIndexFile().exists()) { "There already is an index file for today, aborting" }
-    require(!getTodaysDashboardFile().exists()) { "There already is a dashboard file for today, aborting" }
+    if (conf.o == false) {
+        if (getTodaysIndexFile(conf).exists() || getTodaysDashboardFile(conf).exists()) {
+            logger.info("Today's files already exists and shall not be overwritten, shutting down")
+            exitProcess(0)
+        }
+    }
 
     // create index for current date
     val ri = RideIndex()
-    ri.createIndexFromSourceFiles(File(dataDir))
+    ri.createIndexFromSourceFiles(conf.sourceFiles)
 
     // calculate file diffs for index and last index
     // TODO
 
     // create ride objects for new files
     val coroutines = mutableListOf<Deferred<Ride?>>()
-    val pb = ProgressBar("Rides", ri.index.size.toLong())
+    val pb = ProgressBar("Reading Rides", ri.index.size.toLong())
 
     for (path in ri.index) {
         coroutines.add(async(Dispatchers.Default) {
@@ -34,23 +44,27 @@ fun main(args: Array<String>) = runBlocking {
         })
     }
     val rides = coroutines.awaitAll().filterNotNull()
-    println(rides)
+    pb.close()
+    logger.info("Completed reading ${rides.size} files")
 
     // read in last dashboard.json and determine new totals
+    // TODO consider last dashboard
+    val dashboard = createDashboard(rides)
 
     // read in dashboard.json from 7-days ago and determine change
 
     // write dashboard.json and index.txt
     // TODO
-    // ri.saveIndex(getTodaysIndexFile())
+    ri.saveIndex(getTodaysIndexFile(conf))
+    dashboard.saveDashboardJson(getTodaysDashboardFile(conf))
 }
 
-fun getTodaysIndexFile(): File {
+fun getTodaysIndexFile(conf: Conf): File {
     val currentDateTime = LocalDateTime.now()
-    return File("$outputDir/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-index.txt")
+    return File("${conf.outputDir.absolutePath}/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-index.txt")
 }
 
-fun getTodaysDashboardFile(): File {
+fun getTodaysDashboardFile(conf: Conf): File {
     val currentDateTime = LocalDateTime.now()
-    return File("$outputDir/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
+    return File("${conf.outputDir.absolutePath}/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
 }

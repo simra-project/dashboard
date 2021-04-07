@@ -1,16 +1,13 @@
+package ride
+
+import Ride
+import org.apache.logging.log4j.LogManager
 import util.Geo
 import util.toIntPair
-import java.io.BufferedReader
 import java.io.File
 import java.lang.Exception
 
-data class Ride(
-    val region: String,
-    val version: Pair<Int, Int>,
-    val distance: Double,
-    val normalIncidents: Int,
-    val scaryIncidents: Int
-)
+private val logger = LogManager.getLogger()
 
 class RideProcessor(private val file: File) {
 
@@ -23,8 +20,7 @@ class RideProcessor(private val file: File) {
 
             return Ride(region, version, distance, incidents.first, incidents.second)
         } catch (e: Exception) {
-            println("Exception for file " + file.absolutePath)
-            e.printStackTrace()
+            logger.error("Exception for file " + file.absolutePath, e)
         }
         return null
     }
@@ -32,14 +28,14 @@ class RideProcessor(private val file: File) {
     /**
      * @return region
      */
-    fun getRegion(file: File = this.file): String {
+    private fun getRegion(file: File = this.file): String {
         return file.absolutePath.split("data/")[1].split("/Rides")[0]
     }
 
     /**
      * @return major version, minor version
      */
-    fun getVersion(file: File = this.file): Pair<Int, Int> {
+    private fun getVersion(file: File = this.file): Pair<Int, Int> {
         val versionLine = file.bufferedReader().use { it.readLine() }
         return versionLine.split("#").toIntPair()
     }
@@ -47,7 +43,7 @@ class RideProcessor(private val file: File) {
     /**
      * @return normalIncidents, scaryIncidents
      */
-    fun getIncidents(file: File = this.file): Pair<Int, Int> {
+    private fun getIncidents(file: File = this.file): Pair<Int, Int> {
 
         var incidentIndex = -1
         var scaryIndex = -1
@@ -86,7 +82,7 @@ class RideProcessor(private val file: File) {
         return Pair(normalIncidents, scaryIncidents)
     }
 
-    fun getDistance(file: File = this.file): Double {
+    private fun getDistance(file: File = this.file): Double {
         val reader = file.bufferedReader()
 
         while (!reader.readLine().startsWith("lat")) {
