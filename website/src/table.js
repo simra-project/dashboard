@@ -14,18 +14,24 @@ function generateTableHead(table, tableMeta) {
     }
 }
 
-function generateTable(table, dashboard, tableMeta) {
+function generateTable(table, dashboard, tableMeta, mapLinks) {
     for (const region of dashboard.regions) {
         const row = table.insertRow();
         // name column
         const th = document.createElement("td")
         th.setAttribute("data-label", region.name)
         th.className = "has-text-centered has-text-weight-bold"
-        const a = document.createElement("a")
-        a.href = region.map
+
+        const link = mapLinks[region.name]
         const textName = document.createTextNode(region.name);
-        a.appendChild(textName)
-        th.appendChild(a)
+        if (link == null) {
+            th.appendChild(textName)
+        } else {
+            const a = document.createElement("a")
+            a.href = link
+            a.appendChild(textName)
+            th.appendChild(a)
+        }
         row.appendChild(th)
 
         // stat columns
@@ -86,15 +92,17 @@ function generateStatColumn(row, key, value, tableMeta) {
 async function fillTable() {
     let table = document.getElementById("regionTable");
 
-    let [r1, r2] = await Promise.all([
+    let [r1, r2, r3] = await Promise.all([
         fetch("./resources/tableMeta.json"),
-        fetch("./resources/dashboard.json")
+        fetch("./resources/dashboard.json"),
+        fetch("./resources/mapLinks.json")
     ])
 
     let tableMeta = await r1.json()
     let dashboard = await r2.json()
+    let mapLinks = await r3.json()
 
-    generateTable(table, dashboard, tableMeta);
+    generateTable(table, dashboard, tableMeta, mapLinks);
     generateTableHead(table, tableMeta);
 
     sorttable.makeSortable(table)

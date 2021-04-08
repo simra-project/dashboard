@@ -6,7 +6,8 @@ import org.apache.logging.log4j.LogManager
 import java.io.File
 
 private val logger = LogManager.getLogger()
-private val gson = GsonBuilder().setPrettyPrinting().create();
+//private val gson = GsonBuilder().setPrettyPrinting().create();
+private val gson = Gson()
 
 data class Dashboard(val regions: List<Region>) {
 

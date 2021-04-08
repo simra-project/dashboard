@@ -42,7 +42,6 @@ private fun processRidesForRegion(regionName: String, rideList: List<Ride>): Reg
         listOf(rides),
         listOf(incidents),
         listOf(scaryIncidents),
-        listOf(km.toInt()),
-        "https://www.google.com"
+        listOf(km.toInt())
     )
 }

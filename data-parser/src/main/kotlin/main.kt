@@ -36,7 +36,7 @@ fun main(args: Array<String>) = runBlocking {
 
     // create ride objects for new files
     val coroutines = mutableListOf<Deferred<Ride?>>()
-    val pb = ProgressBar("Reading Rides", ri.index.size.toLong())
+    val pb = ProgressBar("Processing Rides", ri.index.size.toLong())
 
     for (path in ri.index) {
         coroutines.add(async(Dispatchers.Default) {

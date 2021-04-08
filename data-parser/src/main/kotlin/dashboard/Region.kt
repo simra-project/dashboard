@@ -7,8 +7,7 @@ package dashboard
         rides: [1300, 400],
         incidents: [270, 21],
         scaryIncidents: [74, 3],
-        km: [4800, 728],
-        map: "https://www.google.com"
+        km: [4800, 728]
     }
  * The first value is the total, the second value the change, i.e., diff to previous snapshot.
  *
@@ -19,7 +18,6 @@ data class Region(
     var incidents: List<Int>,
     var scaryIncidents: List<Int>,
     var km: List<Int>,
-    val map: String
 ) {
     init {
         if (rides.size == 1) {
