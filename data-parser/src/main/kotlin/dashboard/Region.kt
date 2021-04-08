@@ -1,14 +1,18 @@
 package dashboard
 
+import org.apache.logging.log4j.LogManager
+
+private val logger = LogManager.getLogger()
+
 /**
  * Holds the region json that is consumed by table.js of the simra-dashboard website:
-    {
-        name: "Berlin",
-        rides: [1300, 400],
-        incidents: [270, 21],
-        scaryIncidents: [74, 3],
-        km: [4800, 728]
-    }
+{
+name: "Berlin",
+rides: [1300, 400],
+incidents: [270, 21],
+scaryIncidents: [74, 3],
+km: [4800, 728]
+}
  * The first value is the total, the second value the change, i.e., diff to previous snapshot.
  *
  */
@@ -37,4 +41,28 @@ data class Region(
             "Statistic fields must have two slots, does not seem to have two: $this"
         }
     }
+}
+
+fun List<Region>.mergeTwo(): Region {
+    require(this.isNotEmpty()) { "$this does not contain a single region " }
+    require(this.size <= 2) { "$this should contain at most two regions" }
+    require(this.map { it.name }.distinct().size == 1) { "Can only merge regions with the same name: $this" }
+
+    val r1 = this[0]
+    val r2 = this.getOrNull(1)
+
+    if (r2 == null) {
+        logger.debug("There is only one region with name ${r1.name}")
+        return Region(r1.name, r1.rides, r1.incidents, r1.scaryIncidents, r1.km)
+    } else {
+        return Region(
+            r1.name,
+            listOf(r1.rides[0] + r2.rides[0]),
+            listOf(r1.incidents[0] + r2.incidents[0]),
+            listOf(r1.scaryIncidents[0] + r2.scaryIncidents[0]),
+            listOf(r1.km[0] + r2.km[0])
+        )
+    }
+
+
 }

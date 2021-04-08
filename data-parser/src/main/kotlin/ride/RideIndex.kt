@@ -5,12 +5,19 @@ import java.io.File
 
 private val logger = LogManager.getLogger()
 
-class RideIndex() {
+class RideIndex {
 
+    /**
+     * Contains the absolute path for indexed files.
+     */
     lateinit var index: Set<String>
 
-    fun readIndexFromFile(indexFile: File) {
-        require(indexFile.exists()) { "Cannot read index file since ${indexFile.absolutePath} does not exist" }
+    fun readIndexFromFile(indexFile: File?) {
+        if (indexFile == null) {
+            logger.debug("Given index file does not exist, creating empty index.")
+            index = emptySet()
+            return
+        }
         index = indexFile.readLines().toSet()
     }
 
@@ -25,6 +32,10 @@ class RideIndex() {
             .map { it.absolutePath }
             .filter { it.contains("Rides/VM") }
             .toSet()
+    }
+
+    fun getIndexDiff(otherIndex: RideIndex) : Set<String> {
+        return index subtract otherIndex.index
     }
 
 }
