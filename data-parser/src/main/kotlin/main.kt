@@ -14,6 +14,8 @@ import kotlin.system.exitProcess
 
 private val logger = LogManager.getLogger()
 
+// TODO add total stat calculation
+
 fun main(args: Array<String>) = runBlocking {
     val conf = mainBody { ArgParser(args).parseInto(::Conf) }
     logger.info(conf.toString())

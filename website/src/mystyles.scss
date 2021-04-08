@@ -9,6 +9,12 @@ $container-max-width: 1600px;
   min-width: 100px;
 }
 
+.table {
+    th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
+        content: " \25B4\25BE"
+    }
+}
+
 /* Bulma Responsive Tables */
 @import "~bulma-responsive-tables/bulma-responsive-tables";
 

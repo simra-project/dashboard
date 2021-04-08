@@ -1,47 +1,4 @@
-let regions = [{
-        name: "Berlin",
-        rides: [1300, 400],
-        incidents: [270, 21],
-        scaryIncidents: [74, 3],
-        km: [4800, 728],
-        map: "https://www.google.com"
-    },
-    {
-        name: "Ruhrgebiet",
-        rides: [140021, 14320],
-        incidents: [5720, 0],
-        scaryIncidents: [111, 0],
-        km: [1240921, 1495],
-        map: "https://www.google.com"
-    }
-];
-
-let tableMeta = {
-    name: {
-        text: "Region",
-        abbr: "Region"
-    },
-    rides: {
-        text: "#Fahrten",
-        abbr: "Gesamtzahl analysierter Fahrten",
-        tag: "is-success"
-    },
-    incidents: {
-        text: "#Beinaheunfälle (gesamt)",
-        abbr: "Gesamtzahl aufgezeichneter Beinaheunfälle, inkl. beängstitender Beinaheunfälle",
-        tag: "is-warning"
-    },
-    scaryIncidents: {
-        text: "#Beinaheunfälle (beängstitend)",
-        abbr: "Anzahl aufgezeichneter beängstigender Beinaheunfälle",
-        tag: "is-danger"
-    },
-    km: {
-        text: "Gefahrene Kilometer",
-        abbr: "Gefahrene Kilometer",
-        tag: "is-success"
-    }
-}
+let sorttable = require("./sorttable.js")
 
 function generateTableHead(table, tableMeta) {
     const thead = table.createTHead();
@@ -57,12 +14,13 @@ function generateTableHead(table, tableMeta) {
     }
 }
 
-function generateTable(table, regions, tableMeta) {
-    for (const region of regions) {
+function generateTable(table, dashboard, tableMeta) {
+    for (const region of dashboard.regions) {
         const row = table.insertRow();
         // name column
-        const th = document.createElement("th")
+        const th = document.createElement("td")
         th.setAttribute("data-label", region.name)
+        th.className = "has-text-centered has-text-weight-bold"
         const a = document.createElement("a")
         a.href = region.map
         const textName = document.createTextNode(region.name);
@@ -125,10 +83,21 @@ function generateStatColumn(row, key, value, tableMeta) {
     cell.appendChild(div)
 }
 
-function fillTable() {
+async function fillTable() {
     let table = document.getElementById("regionTable");
-    generateTable(table, regions, tableMeta);
+
+    let [r1, r2] = await Promise.all([
+        fetch("./resources/tableMeta.json"),
+        fetch("./resources/dashboard.json")
+    ])
+
+    let tableMeta = await r1.json()
+    let dashboard = await r2.json()
+
+    generateTable(table, dashboard, tableMeta);
     generateTableHead(table, tableMeta);
+
+    sorttable.makeSortable(table)
 }
 
 module.exports = fillTable;
