@@ -9,14 +9,52 @@ import org.apache.logging.log4j.LogManager
 import java.io.File
 
 private val logger = LogManager.getLogger()
-//private val gson = GsonBuilder().setPrettyPrinting().create();
-private val gson = Gson()
+private val gson = GsonBuilder().setPrettyPrinting().create();
+//private val gson = Gson()
 
-data class Dashboard(val regions: List<Region>) {
+data class Dashboard(var regions: List<Region>) {
 
     fun saveDashboardJson(dashboardFile: File) {
         dashboardFile.writeText(gson.toJson(this))
         logger.info("Saved dashboard json to ${dashboardFile.absolutePath}")
+    }
+
+    fun sort() {
+        regions = regions.sortedByDescending { it.rides[0] }
+    }
+
+    /**
+     * Update the diff fields, i.e., put the change between [previous] and [origin] stats and the second position for each region
+     */
+    fun updateDiffs(previous: Dashboard) {
+        for (region in regions) {
+            val pre = previous.find(region.name) ?: continue
+
+            val diffRides = region.rides[0] - pre.rides[0]
+            if (diffRides > 0) {
+                logger.debug("Region ${region.name} has $diffRides new rides.")
+                region.rides = listOf(region.rides[0], diffRides)
+            }
+
+            val diffIncidents = region.incidents[0] - pre.incidents[0]
+            if (diffIncidents > 0) {
+                logger.debug("Region ${region.name} has $diffIncidents new incidents.")
+                region.incidents = listOf(region.incidents[0], diffIncidents)
+            }
+
+            val diffScaryIncidents = region.scaryIncidents[0] - pre.scaryIncidents[0]
+            if (diffScaryIncidents > 0) {
+                logger.debug("Region ${region.name} has $diffScaryIncidents new scary incidents.")
+                region.scaryIncidents = listOf(region.scaryIncidents[0], diffScaryIncidents)
+            }
+
+            val diffKm = region.km[0] - pre.km[0]
+            if (diffKm > 0) {
+                logger.debug("Region ${region.name} has $diffKm new km.")
+                region.km = listOf(region.km[0], diffKm)
+            }
+        }
+        logger.info("Update all diffs from dashboard")
     }
 
 }
@@ -46,18 +84,21 @@ fun readDashboardFromFile(dashboardFile: File?): Dashboard {
         logger.debug("Given dashboard file does not exist, creating empty dashboard.")
         return Dashboard(emptyList())
     }
-    val json = dashboardFile.readLines().joinToString()
+    val json = dashboardFile.readLines().joinToString("")
     return gson.fromJson(json, Dashboard::class.java)
 }
 
+/**
+ * Create a new dashboard by summarizing the regions from the both given dashboards.
+ */
 fun createNewTotalDashboard(pD: Dashboard, cD: Dashboard): Dashboard {
-    val mergedRegions = (pD.regions union cD.regions)
-    val regionNames = mergedRegions.map { it.name }
+    val mergedRegions = pD.regions.toList() + cD.regions.toList()
+    val regionNames = mergedRegions.map { it.name }.distinct()
 
     val newRegions = mutableListOf<Region>()
 
     for (regionName in regionNames) {
-        newRegions.add(mergedRegions.filter { it.name == regionName }.mergeTwo())
+        newRegions.add(mergedRegions.filter { it.name == regionName }.calculateNewTotalsBasedOnTwo())
     }
 
     return Dashboard(newRegions)
@@ -89,11 +130,11 @@ private fun processRidesForRegion(regionName: String, rideList: List<Ride>): Reg
     )
 }
 
-fun Dashboard.find(regionName: String): Region {
+fun Dashboard.find(regionName: String): Region? {
     val regions = this.regions.filter { it.name == regionName }
-    if (regions.size > 1) {
-        logger.error("There is not exactly one regions with name $regionName in $regions")
+    if (regions.size != 1) {
+        logger.debug("There is not exactly one regions with name $regionName in $regions")
     }
 
-    return regions.first()
+    return regions.firstOrNull()
 }

@@ -12,7 +12,7 @@ module.exports = {
     },
     output: {
         path: distFolder,
-        filename: 'js/bundle.js'
+        filename: 'js/dashboard.js'
     },
     module: {
         rules: [{
@@ -34,7 +34,7 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: 'css/mystyles.css'
+            filename: 'css/dashboard.css'
         }),
     ]
 };

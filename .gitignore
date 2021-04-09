@@ -13,3 +13,6 @@ node_modules/
 build
 index.txt
 results/
+
+website/dist/css/dashboard.css
+website/dist/js/dashboard.js

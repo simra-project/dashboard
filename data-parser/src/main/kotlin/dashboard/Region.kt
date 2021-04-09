@@ -43,7 +43,7 @@ data class Region(
     }
 }
 
-fun List<Region>.mergeTwo(): Region {
+fun List<Region>.calculateNewTotalsBasedOnTwo(): Region {
     require(this.isNotEmpty()) { "$this does not contain a single region " }
     require(this.size <= 2) { "$this should contain at most two regions" }
     require(this.map { it.name }.distinct().size == 1) { "Can only merge regions with the same name: $this" }
@@ -52,9 +52,11 @@ fun List<Region>.mergeTwo(): Region {
     val r2 = this.getOrNull(1)
 
     if (r2 == null) {
-        logger.debug("There is only one region with name ${r1.name}")
+        // this output
+        logger.debug("Region ${r1.name} has not any new rides since the previous dashboard creation.")
         return Region(r1.name, r1.rides, r1.incidents, r1.scaryIncidents, r1.km)
     } else {
+        logger.debug("Region ${r1.name} has ${r2.rides[0]} new rides since the previous dashboard creation.")
         return Region(
             r1.name,
             listOf(r1.rides[0] + r2.rides[0]),
@@ -63,6 +65,5 @@ fun List<Region>.mergeTwo(): Region {
             listOf(r1.km[0] + r2.km[0])
         )
     }
-
 
 }

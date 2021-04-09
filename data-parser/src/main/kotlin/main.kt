@@ -58,16 +58,19 @@ fun main(args: Array<String>) = runBlocking {
     logger.info("Completed processing of ${rides.size} rides")
 
     // read in last dashboard.json and determine new totals
-    val currentDashboard = createDashboard(rides)
+    val tmpDashboard = createDashboard(rides)
     val previousDashboard = readDashboardFromFile(previousDashboardFile)
-    val updatedDashboard = createNewTotalDashboard(previousDashboard, currentDashboard)
+    val currentDashboard = createNewTotalDashboard(previousDashboard, tmpDashboard)
 
     // read in dashboard.json from 7-days ago and determine change
+    get7DayDashboardFile(conf)?.let {
+        currentDashboard.updateDiffs(previousDashboard)
+    }
 
     // write dashboard.json and index.txt
-    // TODO
     currentIndex.saveIndex(getTodaysIndexFile(conf))
-    updatedDashboard.saveDashboardJson(getTodaysDashboardFile(conf))
+    currentDashboard.sort()
+    currentDashboard.saveDashboardJson(getTodaysDashboardFile(conf))
 }
 
 fun checkThatPreviousFilesAreFromSameDate(previousDashboardFile: File?, previousIndexFile: File?) {
@@ -87,6 +90,16 @@ fun checkThatPreviousFilesAreFromSameDate(previousDashboardFile: File?, previous
             "Previous dashboard and index file are not from the same date: ${previousDashboardFile.name}, ${previousIndexFile.name}"
         }
     }
+}
+
+fun getTodaysIndexFile(conf: Conf): File {
+    val currentDateTime = LocalDateTime.now()
+    return File("${conf.outputDir.absolutePath}/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-index.txt")
+}
+
+fun getTodaysDashboardFile(conf: Conf): File {
+    val currentDateTime = LocalDateTime.now()
+    return File("${conf.outputDir.absolutePath}/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
 }
 
 fun getPreviousIndexFile(conf: Conf): File? {
@@ -123,12 +136,17 @@ fun getPreviousDashboardFile(conf: Conf): File? {
     }
 }
 
-fun getTodaysIndexFile(conf: Conf): File {
-    val currentDateTime = LocalDateTime.now()
-    return File("${conf.outputDir.absolutePath}/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-index.txt")
-}
 
-fun getTodaysDashboardFile(conf: Conf): File {
-    val currentDateTime = LocalDateTime.now()
-    return File("${conf.outputDir.absolutePath}/${currentDateTime.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
+
+fun get7DayDashboardFile(conf: Conf): File? {
+    val targetDate = LocalDateTime.now().minusDays(7)
+    val file = File("${conf.outputDir.absolutePath}/${targetDate.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
+
+    if (file.exists()) {
+        logger.info("The 7dayDashboard is ${file.name}")
+        return file
+    } else {
+        logger.info("There is no 7dayDashboard file.")
+        return null
+    }
 }
