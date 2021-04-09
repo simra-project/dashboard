@@ -14,6 +14,10 @@ private val gson = GsonBuilder().setPrettyPrinting().create();
 
 data class Dashboard(var regions: List<Region>) {
 
+    var totalRides = -1
+    var totalIncidents = -1
+    var totalKm = -1
+
     fun saveDashboardJson(dashboardFile: File) {
         dashboardFile.writeText(gson.toJson(this))
         logger.info("Saved dashboard json to ${dashboardFile.absolutePath}")
@@ -21,6 +25,12 @@ data class Dashboard(var regions: List<Region>) {
 
     fun sort() {
         regions = regions.sortedByDescending { it.rides[0] }
+    }
+
+    fun updateTotals() {
+        totalRides = regions.sumOf { it.rides[0] }
+        totalIncidents = regions.sumOf { it.incidents[0] }
+        totalKm = regions.sumOf { it.km[0] }
     }
 
     /**

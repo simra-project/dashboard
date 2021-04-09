@@ -70,6 +70,12 @@ fun main(args: Array<String>) = runBlocking {
     // write dashboard.json and index.txt
     currentIndex.saveIndex(getTodaysIndexFile(conf))
     currentDashboard.sort()
+    currentDashboard.updateTotals()
+
+    check(currentDashboard.totalRides == currentIndex.index.size) {
+        "Rides in dashboard (${currentDashboard.totalRides}) does not match files in index (${currentIndex.index.size})"
+    }
+
     currentDashboard.saveDashboardJson(getTodaysDashboardFile(conf))
 }
 
@@ -135,7 +141,6 @@ fun getPreviousDashboardFile(conf: Conf): File? {
         files.first()
     }
 }
-
 
 
 fun get7DayDashboardFile(conf: Conf): File? {

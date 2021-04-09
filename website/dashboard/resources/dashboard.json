@@ -1,24 +1,8 @@
 {
+  "totalRides": 627,
+  "totalIncidents": 402,
+  "totalKm": 5265,
   "regions": [
-    {
-      "name": "Konstanz",
-      "rides": [
-        225,
-        19
-      ],
-      "incidents": [
-        20,
-        1
-      ],
-      "scaryIncidents": [
-        6,
-        1
-      ],
-      "km": [
-        1361,
-        85
-      ]
-    },
     {
       "name": "Stuttgart",
       "rides": [
@@ -35,6 +19,25 @@
       ],
       "km": [
         2251,
+        0
+      ]
+    },
+    {
+      "name": "Konstanz",
+      "rides": [
+        206,
+        0
+      ],
+      "incidents": [
+        19,
+        0
+      ],
+      "scaryIncidents": [
+        5,
+        0
+      ],
+      "km": [
+        1276,
         0
       ]
     },
@@ -96,25 +99,6 @@
       ]
     },
     {
-      "name": "Vulkaneifel",
-      "rides": [
-        14,
-        7
-      ],
-      "incidents": [
-        4,
-        2
-      ],
-      "scaryIncidents": [
-        0,
-        0
-      ],
-      "km": [
-        100,
-        50
-      ]
-    },
-    {
       "name": "Nürnberg",
       "rides": [
         10,
@@ -149,6 +133,25 @@
       ],
       "km": [
         184,
+        0
+      ]
+    },
+    {
+      "name": "Vulkaneifel",
+      "rides": [
+        7,
+        0
+      ],
+      "incidents": [
+        2,
+        0
+      ],
+      "scaryIncidents": [
+        0,
+        0
+      ],
+      "km": [
+        50,
         0
       ]
     },
@@ -438,25 +441,6 @@
       ]
     },
     {
-      "name": "Gießen",
-      "rides": [
-        2,
-        1
-      ],
-      "incidents": [
-        0,
-        0
-      ],
-      "scaryIncidents": [
-        0,
-        0
-      ],
-      "km": [
-        26,
-        13
-      ]
-    },
-    {
       "name": "Heidenheim",
       "rides": [
         1,
@@ -529,6 +513,25 @@
       ],
       "km": [
         4,
+        0
+      ]
+    },
+    {
+      "name": "Gießen",
+      "rides": [
+        1,
+        0
+      ],
+      "incidents": [
+        0,
+        0
+      ],
+      "scaryIncidents": [
+        0,
+        0
+      ],
+      "km": [
+        13,
         0
       ]
     }

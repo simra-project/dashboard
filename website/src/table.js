@@ -89,6 +89,12 @@ function generateStatColumn(row, key, value, tableMeta) {
     cell.appendChild(div)
 }
 
+function updateTotals(dashboard) {
+    document.getElementById("totalRides").innerHTML = dashboard.totalRides
+    document.getElementById("totalIncidents").innerHTML = dashboard.totalIncidents
+    document.getElementById("totalKm").innerHTML = dashboard.totalKm
+}
+
 async function fillTable() {
     let table = document.getElementById("regionTable");
 
@@ -102,6 +108,7 @@ async function fillTable() {
     let dashboard = await r2.json()
     let mapLinks = await r3.json()
 
+    updateTotals(dashboard);
     generateTable(table, dashboard, tableMeta, mapLinks);
     generateTableHead(table, tableMeta);
 
