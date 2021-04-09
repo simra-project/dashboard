@@ -1,5 +1,3 @@
 {
-    "Berlin": "https://www.google.com",
-    "Ruhrgebiet": "https://www.google.com",
-    "Stuttgart": "https://www.google.com"
+    "Berlin": "./map.html?region=berlin"
 }

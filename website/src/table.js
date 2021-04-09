@@ -34,17 +34,22 @@ function generateTable(table, dashboard, tableMeta, mapLinks) {
         }
         row.appendChild(th)
 
+        let diffs = true
+        if (dashboard.diffDate == undefined) {
+            diffs = false
+        }
+
         // stat columns
         for (const [key, value] of Object.entries(region)) {
             if (["rides", "incidents", "scaryIncidents", "km"].includes(key)) {
-                generateStatColumn(row, key, value, tableMeta);
+                generateStatColumn(row, key, value, tableMeta, diffs);
             }
         }
     }
 }
 
-// key = rides, value = [100, 1]
-function generateStatColumn(row, key, value, tableMeta) {
+// key = rides, value = [100, 1], diffs = true/false
+function generateStatColumn(row, key, value, tableMeta, diffs) {
     // create cell and append already to row
     const cell = document.createElement("td")
     cell.setAttribute("data-label", tableMeta[key].text);
@@ -60,32 +65,36 @@ function generateStatColumn(row, key, value, tableMeta) {
     // create total span text
     const totalSpanText = document.createTextNode(value[0].toLocaleString())
 
-    // create diff span
-    const divSpan = document.createElement("span")
-    const icon = document.createElement("i")
-    if (value[1] > 0) {
-        divSpan.className = "tag " + tableMeta[key].tag
-        icon.className = "fas fa-arrow-circle-up"
-    } else {
-        divSpan.className = "tag"
-        icon.className = "fas fa-arrow-circle-right"
-    }
-    const iconText = document.createElement("span")
-    iconText.className = "icon-text is-flex-wrap-nowrap"
-    const iconSpan = document.createElement("span")
-    iconSpan.className = "icon mr-0"
-    const diffValue = document.createElement("span")
-    diffValue.appendChild(document.createTextNode(value[1].toLocaleString()))
-
-    // append elements in reverse creation order to cell
-    iconSpan.appendChild(icon)
-    iconText.appendChild(iconSpan)
-    iconText.appendChild(diffValue)
-    divSpan.appendChild(iconText)
-
+    // append elements
     totalSpan.appendChild(totalSpanText)
     div.appendChild(totalSpan)
-    div.appendChild(divSpan)
+
+    if (diffs) {
+        // create diff span
+        const divSpan = document.createElement("span")
+        const icon = document.createElement("i")
+        if (value[1] > 0) {
+            divSpan.className = "tag " + tableMeta[key].tag
+            icon.className = "fas fa-arrow-circle-up"
+        } else {
+            divSpan.className = "tag"
+            icon.className = "fas fa-arrow-circle-right"
+        }
+        const iconText = document.createElement("span")
+        iconText.className = "icon-text is-flex-wrap-nowrap"
+        const iconSpan = document.createElement("span")
+        iconSpan.className = "icon mr-0"
+        const diffValue = document.createElement("span")
+        diffValue.appendChild(document.createTextNode(value[1].toLocaleString()))
+
+        // append elements in reverse creation order to cell
+        iconSpan.appendChild(icon)
+        iconText.appendChild(iconSpan)
+        iconText.appendChild(diffValue)
+        divSpan.appendChild(iconText)
+        div.appendChild(divSpan)
+    }
+
     cell.appendChild(div)
 }
 

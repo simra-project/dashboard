@@ -37,7 +37,7 @@ fun main(args: Array<String>) = runBlocking {
     currentIndex.createIndexFromSourceFiles(conf.sourceFiles)
     val previousIndex = RideIndex()
     previousIndex.readIndexFromFile(previousIndexFile)
-    logger.info("There are ${currentIndex.index.size} ride files, ${previousIndex.index.size} area found in previous index")
+    logger.info("There are ${currentIndex.index.size} ride files, ${previousIndex.index.size} are found in previous index")
 
     // skip files that are present in previous index
     val rideFiles = currentIndex.getIndexDiff(previousIndex)
@@ -62,9 +62,9 @@ fun main(args: Array<String>) = runBlocking {
     val previousDashboard = readDashboardFromFile(previousDashboardFile)
     val currentDashboard = createNewTotalDashboard(previousDashboard, tmpDashboard)
 
-    // read in dashboard.json from 7-days ago and determine change
-    get7DayDashboardFile(conf)?.let {
-        currentDashboard.updateDiffs(previousDashboard)
+    // read in dashboard.json for diff and determine degree of change
+    getDiffDashboardFile(conf)?.let {
+        currentDashboard.updateDiffs(previousDashboard, it.name.replace("-dashboard.json", ""))
     }
 
     // write dashboard.json and index.txt
@@ -143,15 +143,19 @@ fun getPreviousDashboardFile(conf: Conf): File? {
 }
 
 
-fun get7DayDashboardFile(conf: Conf): File? {
+fun getDiffDashboardFile(conf: Conf): File? {
     val targetDate = LocalDateTime.now().minusDays(7)
-    val file = File("${conf.outputDir.absolutePath}/${targetDate.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
+    var file = File("${conf.outputDir.absolutePath}/${targetDate.format(DateTimeFormatter.ISO_DATE)}-dashboard.json")
 
-    if (file.exists()) {
-        logger.info("The 7dayDashboard is ${file.name}")
-        return file
+    if (!file.exists()) {
+        getPreviousDashboardFile(conf)?.let { file = it } // if there is a previous dashboard file, use it for diff
+    }
+
+    return if (file.exists()) {
+        logger.info("The diff dashboard is ${file.name}")
+        file
     } else {
-        logger.info("There is no 7dayDashboard file.")
-        return null
+        logger.info("There is no dashboard that could be used to calculate diff")
+        null
     }
 }

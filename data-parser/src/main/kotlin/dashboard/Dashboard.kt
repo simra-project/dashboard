@@ -17,6 +17,7 @@ data class Dashboard(var regions: List<Region>) {
     var totalRides = -1
     var totalIncidents = -1
     var totalKm = -1
+    var diffDate: String? = null
 
     fun saveDashboardJson(dashboardFile: File) {
         dashboardFile.writeText(gson.toJson(this))
@@ -36,7 +37,7 @@ data class Dashboard(var regions: List<Region>) {
     /**
      * Update the diff fields, i.e., put the change between [previous] and [origin] stats and the second position for each region
      */
-    fun updateDiffs(previous: Dashboard) {
+    fun updateDiffs(previous: Dashboard, diffDate: String) {
         for (region in regions) {
             val pre = previous.find(region.name) ?: continue
 
@@ -64,6 +65,7 @@ data class Dashboard(var regions: List<Region>) {
                 region.km = listOf(region.km[0], diffKm)
             }
         }
+        this.diffDate = diffDate
         logger.info("Update all diffs from dashboard")
     }
 
@@ -99,7 +101,7 @@ fun readDashboardFromFile(dashboardFile: File?): Dashboard {
 }
 
 /**
- * Create a new dashboard by summarizing the regions from the both given dashboards.
+ * Create a new dashboard by summarizing the regions values from the both given dashboards.
  */
 fun createNewTotalDashboard(pD: Dashboard, cD: Dashboard): Dashboard {
     val mergedRegions = pD.regions.toList() + cD.regions.toList()
