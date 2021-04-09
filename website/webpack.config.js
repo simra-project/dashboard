@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 distFolder = path.resolve(__dirname, 'dashboard')
 
@@ -36,5 +37,6 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: 'css/dashboard.css'
         }),
+        new BundleAnalyzerPlugin()
     ]
 };
