@@ -12,7 +12,7 @@ private val logger = LogManager.getLogger()
 private val gson = GsonBuilder().setPrettyPrinting().create();
 //private val gson = Gson()
 
-data class Dashboard(var regions: List<Region>) {
+data class Dashboard(var regions: List<Region>, val sourceDate: String) {
 
     var totalRides = -1
     var totalIncidents = -1
@@ -71,7 +71,7 @@ data class Dashboard(var regions: List<Region>) {
 
 }
 
-suspend fun createDashboard(rides: List<Ride>): Dashboard = coroutineScope {
+suspend fun createDashboard(rides: List<Ride>, sourceDate: String): Dashboard = coroutineScope {
     val regionNames = rides.map { it.region }.distinct()
 
     val coroutines = mutableListOf<Deferred<Region>>()
@@ -88,13 +88,13 @@ suspend fun createDashboard(rides: List<Ride>): Dashboard = coroutineScope {
     val regionData = coroutines.awaitAll()
     pb.close()
 
-    Dashboard(regionData)
+    Dashboard(regionData, sourceDate)
 }
 
 fun readDashboardFromFile(dashboardFile: File?): Dashboard {
     if (dashboardFile == null) {
         logger.debug("Given dashboard file does not exist, creating empty dashboard.")
-        return Dashboard(emptyList())
+        return Dashboard(emptyList(), "empty")
     }
     val json = dashboardFile.readLines().joinToString("")
     return gson.fromJson(json, Dashboard::class.java)
@@ -113,7 +113,7 @@ fun createNewTotalDashboard(pD: Dashboard, cD: Dashboard): Dashboard {
         newRegions.add(mergedRegions.filter { it.name == regionName }.calculateNewTotalsBasedOnTwo())
     }
 
-    return Dashboard(newRegions)
+    return Dashboard(newRegions, cD.sourceDate)
 }
 
 /*****************************************************************/

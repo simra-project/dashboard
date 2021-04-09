@@ -12,6 +12,7 @@ import me.tongfei.progressbar.ProgressBar
 import org.apache.logging.log4j.LogManager
 import ride.RideIndex
 import ride.RideProcessor
+import java.time.format.FormatStyle
 import kotlin.system.exitProcess
 
 private val logger = LogManager.getLogger()
@@ -58,7 +59,7 @@ fun main(args: Array<String>) = runBlocking {
     logger.info("Completed processing of ${rides.size} rides")
 
     // read in last dashboard.json and determine new totals
-    val tmpDashboard = createDashboard(rides)
+    val tmpDashboard = createDashboard(rides, LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)))
     val previousDashboard = readDashboardFromFile(previousDashboardFile)
     val currentDashboard = createNewTotalDashboard(previousDashboard, tmpDashboard)
 

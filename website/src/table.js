@@ -102,6 +102,7 @@ function updateTotals(dashboard) {
     document.getElementById("totalRides").innerHTML = dashboard.totalRides
     document.getElementById("totalIncidents").innerHTML = dashboard.totalIncidents
     document.getElementById("totalKm").innerHTML = dashboard.totalKm
+    document.getElementById("sourceDate").innerHTML = dashboard.sourceDate
 }
 
 async function fillTable() {
