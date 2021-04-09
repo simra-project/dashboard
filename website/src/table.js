@@ -99,9 +99,9 @@ function generateStatColumn(row, key, value, tableMeta, diffs) {
 }
 
 function updateTotals(dashboard) {
-    document.getElementById("totalRides").innerHTML = dashboard.totalRides
-    document.getElementById("totalIncidents").innerHTML = dashboard.totalIncidents
-    document.getElementById("totalKm").innerHTML = dashboard.totalKm
+    document.getElementById("totalRides").innerHTML = dashboard.totalRides.toLocaleString()
+    document.getElementById("totalIncidents").innerHTML = dashboard.totalIncidents.toLocaleString()
+    document.getElementById("totalKm").innerHTML = dashboard.totalKm.toLocaleString()
     document.getElementById("sourceDate").innerHTML = dashboard.sourceDate
 }
 

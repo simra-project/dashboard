@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager
 import util.Geo
 import util.toIntPair
 import java.io.File
-import java.lang.Exception
+import kotlin.Exception
 
 private val logger = LogManager.getLogger()
 
@@ -36,8 +36,16 @@ class RideProcessor(private val file: File) {
      * @return major version, minor version
      */
     private fun getVersion(file: File = this.file): Pair<Int, Int> {
-        val versionLine = file.bufferedReader().use { it.readLine() }
-        return versionLine.split("#").toIntPair()
+        val reader = file.bufferedReader()
+
+        while (true) {
+            val line = reader.readLine()
+            if (line.contains("#")) {
+                return line.split("#").toIntPair()
+            } else if (line == null) {
+                throw Exception("${file.name} does not contain a version")
+            }
+        }
     }
 
     /**
