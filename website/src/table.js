@@ -64,6 +64,8 @@ function generateStatColumn(row, key, value, tableMeta, diffs) {
     totalSpan.className = "tag is-medium mr-1 is-flex-grow-1"
     // create total span text
     const totalSpanText = document.createTextNode(value[0].toLocaleString())
+    // set sort-key of cell to value
+    cell.setAttribute("sorttable_customkey", value[0].toString())
 
     // append elements
     totalSpan.appendChild(totalSpanText)
