@@ -32,7 +32,7 @@ class Conf(parser: ArgParser) {
 
     val o by parser
         .storing("-o", "--overwrite", help = "whether today's files should be overwritten")
-        .default(true)
+        .default(false)
 
     val copyTo by parser
         .storing("-c", "--copy", help = "filepath to which a copy of the dashboard.json will be stored") { File(this) }

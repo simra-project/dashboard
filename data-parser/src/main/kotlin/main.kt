@@ -21,11 +21,11 @@ private val logger = LogManager.getLogger()
 // TODO add total stat calculation
 
 fun main(args: Array<String>) = runBlocking {
+    val conf = mainBody { ArgParser(args).parseInto(::Conf) }
+
     logger.info("------------------------------------------------------")
     logger.info("Starting Data Parser")
     logger.info("------------------------------------------------------")
-
-    val conf = mainBody { ArgParser(args).parseInto(::Conf) }
     logger.info(conf.toString())
 
     if (conf.o == false) {

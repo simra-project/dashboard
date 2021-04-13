@@ -3,7 +3,7 @@
 ## Instructions
 
 The latest jar is build with Java 11 to `./data-parser-1.0-fat.jar`.
-Rebuild with `./gradlew fatjar`
+Rebuild with `./gradlew fatJar`
 
 ```
 usage: [-h] [-s SOURCES] [-r RESULTS] [-o OVERWRITE] [-c COPY]
@@ -25,5 +25,6 @@ optional arguments:
 
 ```
 
-Default config: source files (../data), output directory (./results), today's file overwriting (true), dashboard copy (../simra-project.github.io/dashboard/resources/dashboard.json)
+Default config: source files (../data), output directory (./results), today's file overwriting (false), dashboard 
+copy (../simra-project.github.io/dashboard/resources/dashboard.json)
 
