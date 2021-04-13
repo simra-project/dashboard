@@ -12,6 +12,7 @@ import me.tongfei.progressbar.ProgressBar
 import org.apache.logging.log4j.LogManager
 import ride.RideIndex
 import ride.RideProcessor
+import java.time.LocalDate
 import java.time.format.FormatStyle
 import kotlin.system.exitProcess
 
@@ -20,6 +21,10 @@ private val logger = LogManager.getLogger()
 // TODO add total stat calculation
 
 fun main(args: Array<String>) = runBlocking {
+    logger.info("\n\n ------------------------------------------------------")
+    logger.info("Starting Data Parser")
+    logger.info("------------------------------------------------------")
+
     val conf = mainBody { ArgParser(args).parseInto(::Conf) }
     logger.info(conf.toString())
 
@@ -66,7 +71,10 @@ fun main(args: Array<String>) = runBlocking {
 
     // read in dashboard.json for diff and determine degree of change
     getDiffDashboardFile(conf)?.let {
-        currentDashboard.updateDiffs(previousDashboard, it.name.replace("-dashboard.json", ""))
+        val dateString = it.name.replace("-dashboard.json", "")
+        val formatted = LocalDate.parse(dateString, DateTimeFormatter.ISO_DATE)
+            .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+        currentDashboard.updateDiffs(previousDashboard, formatted)
     }
 
     // write dashboard.json and index.txt
@@ -75,6 +83,7 @@ fun main(args: Array<String>) = runBlocking {
     currentDashboard.updateTotals()
 
     currentDashboard.saveDashboardJson(getTodaysDashboardFile(conf))
+    currentDashboard.saveDashboardJson(conf.copyTo)
 
     if (currentDashboard.totalRides != currentIndex.index.size) {
         logger.error("Rides in dashboard (${currentDashboard.totalRides}) does not match files in index (${currentIndex.index.size})")

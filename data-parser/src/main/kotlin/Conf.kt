@@ -34,8 +34,17 @@ class Conf(parser: ArgParser) {
         .storing("-o", "--overwrite", help = "whether today's files should be overwritten")
         .default(true)
 
+    val copyTo by parser
+        .storing("-c", "--copy", help = "filepath to which a copy of the dashboard.json will be stored") { File(this) }
+        .default(File("../simra-project.github.io/dashboard/resources/dashboard.json"))
+        .addValidator {
+            check(value.parentFile.isDirectory) { "Dashboard copy must be stored in a directory "}
+            check(value.extension == "json") { "Dashboard must be stored in a json file "}
+        }
+
+
     override fun toString(): String {
-        return "Configuration: source files (${sourceFiles.absolutePath}), output directory (${outputDir.absolutePath}), today's file overwriting ($o)"
+        return "Configuration: source files (${sourceFiles.absolutePath}), output directory (${outputDir.absolutePath}), today's file overwriting ($o), dashboard copy (${copyTo.absolutePath})"
     }
 
 

@@ -105,6 +105,12 @@ function updateTotals(dashboard) {
     document.getElementById("totalIncidents").innerHTML = dashboard.totalIncidents.toLocaleString()
     document.getElementById("totalKm").innerHTML = dashboard.totalKm.toLocaleString()
     document.getElementById("sourceDate").innerHTML = dashboard.sourceDate
+
+    if (dashboard.diffDate != undefined) {
+        document.getElementById("diffDate").innerHTML = dashboard.diffDate
+    } else {
+        document.getElementById("diffText").style.display = "none";
+    }
 }
 
 async function fillTable() {
