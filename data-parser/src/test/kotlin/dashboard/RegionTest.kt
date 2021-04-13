@@ -19,6 +19,6 @@ class RegionTest {
     }
 
     private fun getBerlinRegion(): Region {
-        return Region("Berlin", listOf(1300, 400), listOf(270, 21), listOf(74, 3), listOf(4800, 729), "https://www.google.com")
+        return Region("Berlin", listOf(1300, 400), listOf(270, 21), listOf(74, 3), listOf(4800, 729))
     }
 }

@@ -21,7 +21,7 @@ private val logger = LogManager.getLogger()
 // TODO add total stat calculation
 
 fun main(args: Array<String>) = runBlocking {
-    logger.info("\n\n ------------------------------------------------------")
+    logger.info("------------------------------------------------------")
     logger.info("Starting Data Parser")
     logger.info("------------------------------------------------------")
 
@@ -88,6 +88,10 @@ fun main(args: Array<String>) = runBlocking {
     if (currentDashboard.totalRides != currentIndex.index.size) {
         logger.error("Rides in dashboard (${currentDashboard.totalRides}) does not match files in index (${currentIndex.index.size})")
     }
+
+    logger.info("------------------------------------------------------")
+    logger.info("Terminating Data Parser")
+    logger.info("------------------------------------------------------")
 }
 
 fun checkThatPreviousFilesAreFromSameDate(previousDashboardFile: File?, previousIndexFile: File?) {

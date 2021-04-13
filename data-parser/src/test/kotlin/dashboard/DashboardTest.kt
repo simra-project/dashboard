@@ -13,7 +13,7 @@ class DashboardTest {
     fun json() {
         val regionB = getBerlinRegion()
         val regionR = getRuhrgebietRegion()
-        val dashboard = Dashboard(listOf(regionB, regionR))
+        val dashboard = Dashboard(listOf(regionB, regionR), "TestDate")
         val jsonString = gson.toJson(dashboard)
         println(jsonString)
         val dashboard2 = gson.fromJson(jsonString, Dashboard::class.java)
@@ -21,10 +21,10 @@ class DashboardTest {
     }
 
     private fun getBerlinRegion(): Region {
-        return Region("Berlin", listOf(1300, 400), listOf(270, 21), listOf(74, 3), listOf(4800, 729), "https://www.google.com")
+        return Region("Berlin", listOf(1300, 400), listOf(270, 21), listOf(74, 3), listOf(4800, 729))
     }
 
     private fun getRuhrgebietRegion(): Region {
-        return Region("Ruhrgebiet", listOf(140021, 14320), listOf(5720), listOf(111), listOf(1240921, 1495), "https://www.google.com")
+        return Region("Ruhrgebiet", listOf(140021, 14320), listOf(5720), listOf(111), listOf(1240921, 1495))
     }
 }
