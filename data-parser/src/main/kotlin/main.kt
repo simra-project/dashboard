@@ -83,10 +83,12 @@ fun main(args: Array<String>) = runBlocking {
     currentDashboard.updateTotals()
 
     currentDashboard.saveDashboardJson(getTodaysDashboardFile(conf))
-    currentDashboard.saveDashboardJson(conf.copyTo)
 
     if (currentDashboard.totalRides != currentIndex.index.size) {
         logger.error("Rides in dashboard (${currentDashboard.totalRides}) does not match files in index (${currentIndex.index.size})")
+        logger.error("Not storing copy to ${conf.copyTo.absolutePath}")
+    } else {
+        currentDashboard.saveDashboardJson(conf.copyTo)
     }
 
     logger.info("------------------------------------------------------")
