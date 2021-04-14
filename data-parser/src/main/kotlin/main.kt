@@ -14,6 +14,7 @@ import ride.RideIndex
 import ride.RideProcessor
 import java.time.LocalDate
 import java.time.format.FormatStyle
+import java.util.*
 import kotlin.system.exitProcess
 
 private val logger = LogManager.getLogger()
@@ -65,7 +66,8 @@ fun main(args: Array<String>) = runBlocking {
 
     // read in last dashboard.json and determine new totals
     val tmpDashboard =
-        createDashboard(rides, LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)))
+        createDashboard(rides, LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(
+            Locale.GERMANY)))
     val previousDashboard = readDashboardFromFile(previousDashboardFile)
     val currentDashboard = createNewTotalDashboard(previousDashboard, tmpDashboard)
 
@@ -73,7 +75,7 @@ fun main(args: Array<String>) = runBlocking {
     getDiffDashboardFile(conf)?.let {
         val dateString = it.name.replace("-dashboard.json", "")
         val formatted = LocalDate.parse(dateString, DateTimeFormatter.ISO_DATE)
-            .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
+            .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(Locale.GERMANY))
         currentDashboard.updateDiffs(previousDashboard, formatted)
     }
 
