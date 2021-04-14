@@ -53,7 +53,7 @@ fun main(args: Array<String>) = runBlocking {
     val pb = ProgressBar("Processing Rides", rideFiles.size.toLong())
 
     for (path in rideFiles) {
-        coroutines.add(async(Dispatchers.Default) {
+        coroutines.add(async(Dispatchers.IO) {
             val ride = RideProcessor(File(path)).getRide()
             pb.step()
             ride
