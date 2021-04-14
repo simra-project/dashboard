@@ -29,7 +29,7 @@ class RideProcessor(private val file: File) {
      * @return region
      */
     private fun getRegion(file: File = this.file): String {
-        return file.absolutePath.split("data/")[1].split("/Rides")[0]
+        return file.absolutePath.split("/Rides")[0].split("/").last()
     }
 
     /**
