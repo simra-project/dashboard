@@ -2,11 +2,9 @@
 
 After cloning, initialize submodules with `git submodule update --init`.
 
-It makes sense to add a deploy-key for simra.project.github.io, so that we can push without having to enter passwords etc, e.g., by using *git-bot*.
+# Instructions
 
-```bash
-# Commit latest changes (preferably changes to the dashboard.json) via git-bot
-./git-bot/git-bot.sh ./simra.project.github.io >> ./git-bot/log.sh
+1. Build the latest dashboard.json with the data-parser (pre-built jar in directory)
+2. Commit the newly created dashboard.json in simra-project.github.io
 
-
-```
+Additional tips can be found in the README.md of data-parser and simra-project.github.io

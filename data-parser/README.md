@@ -1,5 +1,8 @@
 # Data Parser
 
+At VM2, create the latest dashboard.json with `java -jar data-parser-1.0-fat.jar -s sdb/SimRa/SimRa`.
+You might need to create the results dir beforehand.
+
 ## Instructions
 
 The latest jar is build with Java 11 to `./data-parser-1.0-fat.jar`.
@@ -25,6 +28,5 @@ optional arguments:
 
 ```
 
-Default config: source files (../data), output directory (./results), today's file overwriting (false), dashboard 
+Default config: source files (../data), output directory (./results), today's file overwriting (false), dashboard
 copy (../simra-project.github.io/dashboard/resources/dashboard.json)
-
