@@ -30,3 +30,7 @@ optional arguments:
 
 Default config: source files (../data), output directory (./results), today's file overwriting (false), dashboard
 copy (../simra-project.github.io/dashboard/resources/dashboard.json)
+
+## Output
+
+The *dashboard.json* regions are based on the folders found in the source directory. This behavior should not be changed (since every name change would break the history). If you want to change the names shown to the end-users, change it in the front-end.

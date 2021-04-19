@@ -14,16 +14,24 @@ function generateTableHead(table, tableMeta) {
     }
 }
 
-function generateTable(table, dashboard, tableMeta, mapLinks) {
+function generateTable(table, dashboard, tableMeta, mapLinks, regionNames) {
     for (const region of dashboard.regions) {
+        let shownName
+        try {
+            shownName = regionNames[region.name]["DE"]
+        } catch (err) {
+            console.log(region.name + " not found in regionNames.json")
+            shownName = region.name
+        }
+
         const row = table.insertRow();
         // name column
         const th = document.createElement("td")
-        th.setAttribute("data-label", region.name)
+        th.setAttribute("data-label", shownName)
         th.className = "has-text-centered has-text-weight-bold"
 
         const link = mapLinks[region.name]
-        const textName = document.createTextNode(region.name);
+        const textName = document.createTextNode(shownName);
         if (link == null) {
             th.appendChild(textName)
         } else {
@@ -116,18 +124,20 @@ function updateTotals(dashboard) {
 async function fillTable() {
     let table = document.getElementById("regionTable");
 
-    let [r1, r2, r3] = await Promise.all([
+    let [r1, r2, r3, r4] = await Promise.all([
         fetch("./resources/tableMeta.json"),
         fetch("./resources/dashboard.json"),
-        fetch("./resources/mapLinks.json")
+        fetch("./resources/mapLinks.json"),
+        fetch("./resources/regionNames.json")
     ])
 
     let tableMeta = await r1.json()
     let dashboard = await r2.json()
     let mapLinks = await r3.json()
+    let regionNames = await r4.json()
 
     updateTotals(dashboard);
-    generateTable(table, dashboard, tableMeta, mapLinks);
+    generateTable(table, dashboard, tableMeta, mapLinks, regionNames);
     generateTableHead(table, tableMeta);
 
     sorttable.makeSortable(table)
