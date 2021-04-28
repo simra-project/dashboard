@@ -12,14 +12,11 @@ import me.tongfei.progressbar.ProgressBar
 import org.apache.logging.log4j.LogManager
 import ride.RideIndex
 import ride.RideProcessor
-import java.time.LocalDate
 import java.time.format.FormatStyle
 import java.util.*
 import kotlin.system.exitProcess
 
 private val logger = LogManager.getLogger()
-
-// TODO add total stat calculation
 
 fun main(args: Array<String>) = runBlocking {
     val conf = mainBody { ArgParser(args).parseInto(::Conf) }
@@ -65,18 +62,14 @@ fun main(args: Array<String>) = runBlocking {
     logger.info("Completed processing of ${rides.size} rides")
 
     // read in last dashboard.json and determine new totals
-    val tmpDashboard =
-        createDashboard(rides, LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(
-            Locale.GERMANY)))
+    val tmpDashboard = createDashboard(rides, getDateTimeString())
     val previousDashboard = readDashboardFromFile(previousDashboardFile)
     val currentDashboard = createNewTotalDashboard(previousDashboard, tmpDashboard)
 
     // read in dashboard.json for diff and determine degree of change
     getDiffDashboardFile(conf)?.let {
-        val dateString = it.name.replace("-dashboard.json", "")
-        val formatted = LocalDate.parse(dateString, DateTimeFormatter.ISO_DATE)
-            .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).withLocale(Locale.GERMANY))
-        currentDashboard.updateDiffs(previousDashboard, formatted)
+        val diffDate = previousDashboard.sourceDate
+        currentDashboard.updateDiffs(previousDashboard, diffDate)
     }
 
     // write dashboard.json and index.txt
@@ -97,6 +90,9 @@ fun main(args: Array<String>) = runBlocking {
     logger.info("Terminating Data Parser")
     logger.info("------------------------------------------------------")
 }
+
+private fun getDateTimeString() = LocalDateTime.now()
+    .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.GERMANY))
 
 fun checkThatPreviousFilesAreFromSameDate(previousDashboardFile: File?, previousIndexFile: File?) {
     if (previousDashboardFile == null) {
@@ -149,6 +145,7 @@ fun getPreviousDashboardFile(conf: Conf): File? {
 
     val files = allFiles
         .filter { it.name.contains("dashboard") }
+        .filter { it.name.split("-").size == 4 } // only dashboard with full date
         .filter { it.absolutePath != getTodaysDashboardFile(conf).absolutePath }
         .sortedDescending()
 
