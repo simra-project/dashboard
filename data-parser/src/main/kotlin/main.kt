@@ -68,8 +68,10 @@ fun main(args: Array<String>) = runBlocking {
 
     // read in dashboard.json for diff and determine degree of change
     getDiffDashboardFile(conf)?.let {
-        val diffDate = previousDashboard.sourceDate
-        currentDashboard.updateDiffs(previousDashboard, diffDate)
+        val diffDashboard = readDashboardFromFile(it)
+
+        val diffDate = diffDashboard.sourceDate
+        currentDashboard.updateDiffs(diffDashboard, diffDate)
     }
 
     // write dashboard.json and index.txt
