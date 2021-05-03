@@ -35,7 +35,7 @@ data class Dashboard(var regions: List<Region>, val sourceDate: String) {
     }
 
     /**
-     * Update the diff fields, i.e., put the change between [previous] and [origin] stats and the second position for each region
+     * Update the diff fields, i.e., put the change between [previous] and [origin] stats at the second position for each region
      */
     fun updateDiffs(previous: Dashboard, diffDate: String) {
         for (region in regions) {

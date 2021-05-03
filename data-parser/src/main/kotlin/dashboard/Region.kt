@@ -54,7 +54,11 @@ fun List<Region>.calculateNewTotalsBasedOnTwo(): Region {
     if (r2 == null) {
         // this output
         logger.debug("Region ${r1.name} has not any new rides since the previous dashboard creation.")
-        return Region(r1.name, r1.rides, r1.incidents, r1.scaryIncidents, r1.km)
+        return Region(r1.name,
+            listOf(r1.rides[0], 0),
+            listOf(r1.incidents[0], 0),
+            listOf(r1.scaryIncidents[0], 0),
+            listOf(r1.km[0], 0))
     } else {
         logger.debug("Region ${r1.name} has ${r2.rides[0]} new rides since the previous dashboard creation.")
         return Region(
