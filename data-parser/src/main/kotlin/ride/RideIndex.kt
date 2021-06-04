@@ -30,7 +30,7 @@ class RideIndex {
         require(rootDir.isDirectory) { "Cannot create index from source files since directory ${rootDir.absolutePath} does not exist" }
         index = rootDir.walk().toList()
             .map { it.absolutePath }
-            .filter { it.contains("Rides/VM") }
+            .filter { it.contains("/Rides/") }
             .toSet()
     }
 

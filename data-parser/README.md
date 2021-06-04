@@ -40,5 +40,5 @@ The *dashboard.json* regions are based on the folders found in the source direct
 
 # SimRa VM setup
 
-Create the latest dashboard.json with `java -jar data-parser-1.0-fat.jar -s sdb/SimRa/SimRa`.
+Create the latest dashboard.json with `java -jar data-parser-1.0-fat.jar -s sdb/SimRa/Regions`.
 You might need to create the results dir beforehand (`mkdir results`).
