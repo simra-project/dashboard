@@ -31,10 +31,11 @@ class RideIndex {
         index = rootDir.walk().toList()
             .map { it.absolutePath }
             .filter { it.contains("/Rides/") }
+            .filter { it.contains("VM") }
             .toSet()
     }
 
-    fun getIndexDiff(otherIndex: RideIndex) : Set<String> {
+    fun getIndexDiff(otherIndex: RideIndex): Set<String> {
         return index subtract otherIndex.index
     }
 
