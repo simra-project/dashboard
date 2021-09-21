@@ -82,13 +82,14 @@ function generateStatColumn(row, key, value, tableMeta, diffs) {
     if (diffs) {
         // create diff span
         const divSpan = document.createElement("span")
-        const icon = document.createElement("i")
+        const icon = document.createElement("span")
+        icon.className = "unicode-icon"
         if (value[1] > 0) {
             divSpan.className = "tag " + tableMeta[key].tag
-            icon.className = "fas fa-arrow-circle-up"
+            icon.textContent = "⬆"
         } else {
             divSpan.className = "tag"
-            icon.className = "fas fa-arrow-circle-right"
+            icon.textContent = "➡"
         }
         const iconText = document.createElement("span")
         iconText.className = "icon-text is-flex-wrap-nowrap"
