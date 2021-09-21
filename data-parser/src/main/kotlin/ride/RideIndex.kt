@@ -29,6 +29,7 @@ class RideIndex {
     fun createIndexFromSourceFiles(rootDir: File) {
         require(rootDir.isDirectory) { "Cannot create index from source files since directory ${rootDir.absolutePath} does not exist" }
         index = rootDir.walk().toList()
+            .filter { it.length() > 0L }
             .map { it.absolutePath }
             .filter { it.contains("/Rides/") }
             .filter { it.contains("VM") }

@@ -11,7 +11,7 @@ A copy of the latest dashboard is stored to the file at COPY. This is useful to 
 The latest jar is build with Java 11 to `./data-parser-1.0-fat.jar`.
 Rebuild with `./gradlew fatJar`
 
-```
+```bash
 usage: [-h] [-s SOURCES] [-r RESULTS] [-o OVERWRITE] [-c COPY]
 
 optional arguments:
@@ -38,7 +38,7 @@ copy (../simra-project.github.io/dashboard/resources/dashboard.json)
 
 The *dashboard.json* regions are based on the folders found in the source directory. This behavior should not be changed (since every name change would break the history). If you want to change the names shown to the end-users, change it in the front-end.
 
-# SimRa VM setup
+## SimRa VM setup
 
 Create the latest dashboard.json with `java -jar data-parser-1.1-fat.jar -s /sdb/SimRa/Regions`.
 You might need to create the results dir beforehand (`mkdir results`).
