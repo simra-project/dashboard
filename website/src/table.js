@@ -14,8 +14,11 @@ function generateTableHead(table, tableMeta) {
     }
 }
 
-function generateTable(table, dashboard, tableMeta, mapLinks, regionNames) {
+function generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRegion) {
     for (const region of dashboard.regions) {
+        // true if the current region should be at the top when loading the page
+        const atTop = region.name === topRegion
+
         let shownName
         try {
             shownName = regionNames[region.name]["DE"]
@@ -50,14 +53,14 @@ function generateTable(table, dashboard, tableMeta, mapLinks, regionNames) {
         // stat columns
         for (const [key, value] of Object.entries(region)) {
             if (["rides", "incidents", "scaryIncidents", "km"].includes(key)) {
-                generateStatColumn(row, key, value, tableMeta, diffs);
+                generateStatColumn(row, key, value, tableMeta, diffs, atTop);
             }
         }
     }
 }
 
-// key = rides, value = [100, 1], diffs = true/false
-function generateStatColumn(row, key, value, tableMeta, diffs) {
+// key = rides, value = [100, 1], diffs = true/false, atTop = true/false
+function generateStatColumn(row, key, value, tableMeta, diffs, atTop) {
     // create cell and append already to row
     const cell = document.createElement("td")
     cell.setAttribute("data-label", tableMeta[key].text);
@@ -72,8 +75,14 @@ function generateStatColumn(row, key, value, tableMeta, diffs) {
     totalSpan.className = "tag is-medium mr-1 is-flex-grow-1"
     // create total span text
     const totalSpanText = document.createTextNode(value[0].toLocaleString())
-    // set sort-key of cell to value
-    cell.setAttribute("sorttable_customkey", value[0].toString())
+
+    if (!atTop) {
+        // set sort-key of cell to value (normal sorting)
+        cell.setAttribute("sorttable_customkey", value[0].toString())
+    } else {
+        // the given cell should be at the top, so add a very large top-key
+        cell.setAttribute("sorttable_customkey", Number.MAX_SAFE_INTEGER)
+    }
 
     // append elements
     totalSpan.appendChild(totalSpanText)
@@ -122,7 +131,8 @@ function updateTotals(dashboard) {
     }
 }
 
-async function fillTable() {
+// topRegion can be set to the name of a region as found in the dashboard.json; this region will then be shown at the top of the table
+async function fillTable(topRegion) {
     let table = document.getElementById("regionTable");
 
     let [r1, r2, r3, r4] = await Promise.all([
@@ -138,10 +148,14 @@ async function fillTable() {
     let regionNames = await r4.json()
 
     updateTotals(dashboard);
-    generateTable(table, dashboard, tableMeta, mapLinks, regionNames);
+    generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRegion);
     generateTableHead(table, tableMeta);
 
     sorttable.makeSortable(table)
+    // trigger the sorting by clicking the button of the #Fahrten column
+    const sortButton = table.firstElementChild.firstElementChild.children[1]
+    sortButton.click()
+    sortButton.click()
 }
 
 module.exports = fillTable;
