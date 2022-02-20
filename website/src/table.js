@@ -14,7 +14,7 @@ function generateTableHead(table, tableMeta) {
     }
 }
 
-function generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRegion) {
+function generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRegion, incidentLinks) {
     for (const region of dashboard.regions) {
         // true if the current region should be at the top when loading the page
         const atTop = region.name === topRegion
@@ -35,7 +35,7 @@ function generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRe
 
         const link = mapLinks[region.name]
         const textName = document.createTextNode(shownName);
-        if (link == null) {
+        if (link === undefined) {
             th.appendChild(textName)
         } else {
             const a = document.createElement("a")
@@ -44,23 +44,22 @@ function generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRe
             th.appendChild(a)
         }
         row.appendChild(th)
-
         let diffs = true
-        if (dashboard.diffDate == undefined) {
+        if (dashboard.diffDate === undefined) {
             diffs = false
         }
 
         // stat columns
         for (const [key, value] of Object.entries(region)) {
             if (["rides", "incidents", "scaryIncidents", "km"].includes(key)) {
-                generateStatColumn(row, key, value, tableMeta, diffs, atTop);
+                generateStatColumn(row, key, value, tableMeta, diffs, atTop, incidentLinks[region.name]);
             }
         }
     }
 }
 
 // key = rides, value = [100, 1], diffs = true/false, atTop = true/false
-function generateStatColumn(row, key, value, tableMeta, diffs, atTop) {
+function generateStatColumn(row, key, value, tableMeta, diffs, atTop, incidentLink) {
     // create cell and append already to row
     const cell = document.createElement("td")
     cell.setAttribute("data-label", tableMeta[key].text);
@@ -73,8 +72,17 @@ function generateStatColumn(row, key, value, tableMeta, diffs, atTop) {
     // create total span
     const totalSpan = document.createElement("span")
     totalSpan.className = "tag is-medium mr-1 is-flex-grow-1"
-    // create total span text
-    const totalSpanText = document.createTextNode(value[0].toLocaleString())
+    // create total span text.
+    let totalSpanChild;
+    // create a href referencing to the incident map, if "incidents"-cell is being created
+    if ((key === 'incidents') && (incidentLink !== undefined)) {
+        totalSpanChild = document.createElement("a")
+        totalSpanChild.href = incidentLink
+        let text = document.createTextNode(value[0].toLocaleString())
+        totalSpanChild.appendChild(text)
+    } else { // otherwise, just print the text
+        totalSpanChild = document.createTextNode(value[0].toLocaleString())
+    }
 
     if (!atTop) {
         // set sort-key of cell to value (normal sorting)
@@ -85,7 +93,7 @@ function generateStatColumn(row, key, value, tableMeta, diffs, atTop) {
     }
 
     // append elements
-    totalSpan.appendChild(totalSpanText)
+    totalSpan.appendChild(totalSpanChild)
     div.appendChild(totalSpan)
 
     if (diffs) {
@@ -134,21 +142,22 @@ function updateTotals(dashboard) {
 // topRegion can be set to the name of a region as found in the dashboard.json; this region will then be shown at the top of the table
 async function fillTable(topRegion) {
     let table = document.getElementById("regionTable");
-
-    let [r1, r2, r3, r4] = await Promise.all([
+    let [r1, r2, r3, r4, r5] = await Promise.all([
         fetch("./resources/tableMeta.json"),
         fetch("./resources/dashboard.json"),
         fetch("./resources/mapLinks.json"),
-        fetch("./resources/regionNames.json")
+        fetch("./resources/regionNames.json"),
+        fetch("./resources/incidentLinks.json")
     ])
 
     let tableMeta = await r1.json()
     let dashboard = await r2.json()
     let mapLinks = await r3.json()
     let regionNames = await r4.json()
+    let incidentLinks = await r5.json()
 
     updateTotals(dashboard);
-    generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRegion);
+    generateTable(table, dashboard, tableMeta, mapLinks, regionNames, topRegion, incidentLinks);
     generateTableHead(table, tableMeta);
 
     sorttable.makeSortable(table)
