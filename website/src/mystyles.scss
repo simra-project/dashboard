@@ -13,6 +13,11 @@ $container-max-width: 1600px;
     th:not(.sorttable_sorted):not(.sorttable_sorted_reverse):not(.sorttable_nosort):after {
         content: " \25B4\25BE"
     }
+    thead {
+      position: sticky;
+      top: 0;
+      background: white !important;
+    }
 }
 
 .unicode-icon {

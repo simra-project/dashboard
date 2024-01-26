@@ -9,7 +9,7 @@ module.exports = {
     devtool: 'inline-source-map',
     entry: './src/index.js',
     devServer: {
-        contentBase: distFolder
+        static: distFolder
     },
     output: {
         path: distFolder,

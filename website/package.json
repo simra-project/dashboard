@@ -21,17 +21,17 @@
   },
   "homepage": "https://github.com/simra-project/dashboard#readme",
   "devDependencies": {
-    "bulma": "^0.9.3",
-    "bulma-responsive-tables": "^1.2.3",
-    "css-loader": "^1.0.0",
+    "bulma": "^0.9.4",
+    "bulma-responsive-tables": "^1.2.5",
+    "css-loader": "^6.9.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "mini-css-extract-plugin": "^1.6.2",
-    "node-sass": "^4.9.2",
-    "sass-loader": "^7.0.3",
-    "style-loader": "^0.21.0",
-    "webpack": "^4.16.0",
-    "webpack-bundle-analyzer": "^4.4.2",
-    "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.11.2"
+    "mini-css-extract-plugin": "^2.7.7",
+    "node-sass": "^9.0.0",
+    "sass-loader": "^14.0.0",
+    "style-loader": "^3.3.4",
+    "webpack": "^5.89.0",
+    "webpack-bundle-analyzer": "^4.10.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   }
 }
